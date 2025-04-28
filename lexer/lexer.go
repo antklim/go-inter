@@ -31,10 +31,18 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newRuneToken(token.PLUS, l.ch)
 	case '-':
 		tok = newRuneToken(token.MINUS, l.ch)
+	case '*':
+		tok = newRuneToken(token.ASTERISK, l.ch)
+	case '.':
+		tok = newRuneToken(token.PERIOD, l.ch)
+	case '!':
+		tok = newRuneToken(token.BANG, l.ch)
 	case ',':
 		tok = newRuneToken(token.COMMA, l.ch)
 	case ';':
 		tok = newRuneToken(token.SEMICOLON, l.ch)
+	case '/':
+		tok = newRuneToken(token.SLASH, l.ch)
 	case '(':
 		tok = newRuneToken(token.LPAREN, l.ch)
 	case ')':
@@ -43,6 +51,10 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newRuneToken(token.LBRACE, l.ch)
 	case '}':
 		tok = newRuneToken(token.RBRACE, l.ch)
+	case '<':
+		tok = newRuneToken(token.LT, l.ch)
+	case '>':
+		tok = newRuneToken(token.GT, l.ch)
 	case '🤗':
 		tok = newRuneToken(token.HUG, l.ch)
 	case 0:

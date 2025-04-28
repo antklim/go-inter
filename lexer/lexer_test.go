@@ -9,7 +9,7 @@ import (
 
 func TestNextToken(t *testing.T) {
 	t.Run("simple input", func(t *testing.T) {
-		input := "=+{}(),🤗;"
+		input := "=+{}(),🤗;!-/*5 < 10 > 8.,"
 
 		testCases := []struct {
 			expectedType    token.TokenType
@@ -24,6 +24,17 @@ func TestNextToken(t *testing.T) {
 			{expectedType: token.COMMA, expectedLiteral: ","},
 			{expectedType: token.HUG, expectedLiteral: "🤗"},
 			{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+			{expectedType: token.BANG, expectedLiteral: "!"},
+			{expectedType: token.MINUS, expectedLiteral: "-"},
+			{expectedType: token.SLASH, expectedLiteral: "/"},
+			{expectedType: token.ASTERISK, expectedLiteral: "*"},
+			{expectedType: token.INT, expectedLiteral: "5"},
+			{expectedType: token.LT, expectedLiteral: "<"},
+			{expectedType: token.INT, expectedLiteral: "10"},
+			{expectedType: token.GT, expectedLiteral: ">"},
+			{expectedType: token.INT, expectedLiteral: "8"},
+			{expectedType: token.PERIOD, expectedLiteral: "."},
+			{expectedType: token.COMMA, expectedLiteral: ","},
 		}
 
 		l := lexer.New(input)

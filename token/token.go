@@ -9,17 +9,23 @@ const (
 	IDENT TokenType = "IDENT"
 	INT   TokenType = "INT"
 
-	ASSIGN TokenType = "="
-	PLUS   TokenType = "+"
-	MINUS  TokenType = "-"
+	ASSIGN   TokenType = "="
+	PLUS     TokenType = "+"
+	MINUS    TokenType = "-"
+	ASTERISK TokenType = "*"
 
+	BANG      TokenType = "!"
+	PERIOD    TokenType = "."
 	COMMA     TokenType = ","
 	SEMICOLON TokenType = ";"
+	SLASH     TokenType = "/"
 
 	LPAREN TokenType = "("
 	RPAREN TokenType = ")"
 	LBRACE TokenType = "{"
 	RBRACE TokenType = "}"
+	LT     TokenType = "<"
+	GT     TokenType = ">"
 
 	FUNCTION TokenType = "FUNCTION"
 	LET      TokenType = "LET"
