@@ -78,16 +78,17 @@ func (l *Lexer) readChar() {
 }
 
 func (l *Lexer) readIdentifier() string {
-	position := l.chPosition
-	for isLetter(l.ch) {
-		l.readChar()
-	}
-	return l.input[position:l.chPosition]
+	return l.readString(isLetter)
 }
 
 func (l *Lexer) readNumber() string {
+	return l.readString(isDigit)
+}
+
+// readString reads and returns string as long predicate function f returns true.
+func (l *Lexer) readString(f func(rune) bool) string {
 	position := l.chPosition
-	for isDigit(l.ch) {
+	for f(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.chPosition]
