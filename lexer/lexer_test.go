@@ -8,7 +8,7 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	t.Run("simple input", func(t *testing.T) {
+	t.Run("single characters tokenisation", func(t *testing.T) {
 		input := "=+{}(),🤗;!-/*5 < 10 > 8.,"
 
 		testCases := []struct {
@@ -52,7 +52,7 @@ func TestNextToken(t *testing.T) {
 		}
 	})
 
-	t.Run("full code input", func(t *testing.T) {
+	t.Run("assignments and functions", func(t *testing.T) {
 		input := `let five = 5;
 		let ten = 10;
 
@@ -140,6 +140,83 @@ func TestNextToken(t *testing.T) {
 			{expectedType: token.INT, expectedLiteral: "1"},
 			{expectedType: token.RPAREN, expectedLiteral: ")"},
 			{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+
+			{expectedType: token.EOF, expectedLiteral: string(rune(0))},
+		}
+
+		l := lexer.New(input)
+
+		for i, tC := range testCases {
+			tok := l.NextToken()
+
+			if tok.Type != tC.expectedType {
+				t.Errorf("test #%d wrong token type: want %q, got %q", i, tC.expectedType, tok.Type)
+			}
+
+			if tok.Literal != tC.expectedLiteral {
+				t.Errorf("test #%d wrong literal: want %q, got %q", i, tC.expectedLiteral, tok.Literal)
+			}
+		}
+	})
+
+	t.Run("if statements", func(t *testing.T) {
+		input := `
+		let gt = fn(x, y) {
+			if x > y {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		let negative = fn(x) {
+			x < 0
+		}
+		`
+
+		testCases := []struct {
+			expectedType    token.TokenType
+			expectedLiteral string
+		}{
+			{expectedType: token.LET, expectedLiteral: "let"},
+			{expectedType: token.IDENT, expectedLiteral: "gt"},
+			{expectedType: token.ASSIGN, expectedLiteral: "="},
+			{expectedType: token.FUNCTION, expectedLiteral: "fn"},
+			{expectedType: token.LPAREN, expectedLiteral: "("},
+			{expectedType: token.IDENT, expectedLiteral: "x"},
+			{expectedType: token.COMMA, expectedLiteral: ","},
+			{expectedType: token.IDENT, expectedLiteral: "y"},
+			{expectedType: token.RPAREN, expectedLiteral: ")"},
+			{expectedType: token.LBRACE, expectedLiteral: "{"},
+			{expectedType: token.IF, expectedLiteral: "if"},
+			{expectedType: token.IDENT, expectedLiteral: "x"},
+			{expectedType: token.GT, expectedLiteral: ">"},
+			{expectedType: token.IDENT, expectedLiteral: "y"},
+			{expectedType: token.LBRACE, expectedLiteral: "{"},
+			{expectedType: token.RETURN, expectedLiteral: "return"},
+			{expectedType: token.TRUE, expectedLiteral: "true"},
+			{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+			{expectedType: token.RBRACE, expectedLiteral: "}"},
+			{expectedType: token.ELSE, expectedLiteral: "else"},
+			{expectedType: token.LBRACE, expectedLiteral: "{"},
+			{expectedType: token.RETURN, expectedLiteral: "return"},
+			{expectedType: token.FALSE, expectedLiteral: "false"},
+			{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+			{expectedType: token.RBRACE, expectedLiteral: "}"},
+			{expectedType: token.RBRACE, expectedLiteral: "}"},
+
+			{expectedType: token.LET, expectedLiteral: "let"},
+			{expectedType: token.IDENT, expectedLiteral: "negative"},
+			{expectedType: token.ASSIGN, expectedLiteral: "="},
+			{expectedType: token.FUNCTION, expectedLiteral: "fn"},
+			{expectedType: token.LPAREN, expectedLiteral: "("},
+			{expectedType: token.IDENT, expectedLiteral: "x"},
+			{expectedType: token.RPAREN, expectedLiteral: ")"},
+			{expectedType: token.LBRACE, expectedLiteral: "{"},
+			{expectedType: token.IDENT, expectedLiteral: "x"},
+			{expectedType: token.LT, expectedLiteral: "<"},
+			{expectedType: token.INT, expectedLiteral: "0"},
+			{expectedType: token.RBRACE, expectedLiteral: "}"},
 
 			{expectedType: token.EOF, expectedLiteral: string(rune(0))},
 		}
