@@ -235,4 +235,40 @@ func TestNextToken(t *testing.T) {
 			}
 		}
 	})
+
+	t.Run("equality tokens", func(t *testing.T) {
+		input := `
+		10 == 10;
+		10 != 8;
+		`
+
+		testCases := []struct {
+			expectedType    token.TokenType
+			expectedLiteral string
+		}{
+			{expectedType: token.INT, expectedLiteral: "10"},
+			{expectedType: token.EQ, expectedLiteral: "=="},
+			{expectedType: token.INT, expectedLiteral: "10"},
+			{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+
+			{expectedType: token.INT, expectedLiteral: "10"},
+			{expectedType: token.NOT_EQ, expectedLiteral: "!="},
+			{expectedType: token.INT, expectedLiteral: "8"},
+			{expectedType: token.SEMICOLON, expectedLiteral: ";"},
+		}
+
+		l := lexer.New(input)
+
+		for i, tC := range testCases {
+			tok := l.NextToken()
+
+			if tok.Type != tC.expectedType {
+				t.Errorf("test #%d wrong token type: want %q, got %q", i, tC.expectedType, tok.Type)
+			}
+
+			if tok.Literal != tC.expectedLiteral {
+				t.Errorf("test #%d wrong literal: want %q, got %q", i, tC.expectedLiteral, tok.Literal)
+			}
+		}
+	})
 }

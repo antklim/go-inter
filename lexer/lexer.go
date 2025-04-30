@@ -9,8 +9,8 @@ import (
 type Lexer struct {
 	input          string
 	ch             rune
-	chPosition     int
-	nextChPosition int
+	chPosition     int // referenced as position in book
+	nextChPosition int // referenced as readPosition in book
 }
 
 func New(input string) *Lexer {
@@ -26,7 +26,12 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		tok = newRuneToken(token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			l.readChar()
+			tok = newToken(token.EQ, "==")
+		} else {
+			tok = newRuneToken(token.ASSIGN, l.ch)
+		}
 	case '+':
 		tok = newRuneToken(token.PLUS, l.ch)
 	case '-':
@@ -36,7 +41,12 @@ func (l *Lexer) NextToken() token.Token {
 	case '.':
 		tok = newRuneToken(token.PERIOD, l.ch)
 	case '!':
-		tok = newRuneToken(token.BANG, l.ch)
+		if l.peekChar() == '=' {
+			l.readChar()
+			tok = newToken(token.NOT_EQ, "!=")
+		} else {
+			tok = newRuneToken(token.BANG, l.ch)
+		}
 	case ',':
 		tok = newRuneToken(token.COMMA, l.ch)
 	case ';':
@@ -75,6 +85,14 @@ func (l *Lexer) NextToken() token.Token {
 
 	l.readChar()
 	return tok
+}
+
+func (l *Lexer) peekChar() byte {
+	if l.nextChPosition >= len(l.input) {
+		return 0
+	}
+
+	return l.input[l.nextChPosition]
 }
 
 func (l *Lexer) readChar() {

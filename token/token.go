@@ -27,6 +27,9 @@ const (
 	LT     TokenType = "<"
 	GT     TokenType = ">"
 
+	EQ     TokenType = "=="
+	NOT_EQ TokenType = "!="
+
 	FUNCTION TokenType = "FUNCTION"
 	LET      TokenType = "LET"
 	RETURN   TokenType = "RETURN"
