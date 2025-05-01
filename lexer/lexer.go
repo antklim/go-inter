@@ -96,13 +96,13 @@ func (l *Lexer) peekChar() byte {
 }
 
 func (l *Lexer) readChar() {
+	var w int
 	if l.nextChPosition >= len(l.input) {
 		l.ch = 0
-		return
+	} else {
+		l.ch, w = utf8.DecodeRuneInString(l.input[l.nextChPosition:])
 	}
 
-	ch, w := utf8.DecodeRuneInString(l.input[l.nextChPosition:])
-	l.ch = ch
 	l.chPosition = l.nextChPosition
 	l.nextChPosition += w
 }

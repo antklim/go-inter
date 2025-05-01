@@ -52,6 +52,31 @@ func TestNextToken(t *testing.T) {
 		}
 	})
 
+	t.Run("single identifier", func(t *testing.T) {
+		input := "test"
+
+		testCases := []struct {
+			expectedType    token.TokenType
+			expectedLiteral string
+		}{
+			{expectedType: token.IDENT, expectedLiteral: "test"},
+		}
+
+		l := lexer.New(input)
+
+		for i, tC := range testCases {
+			tok := l.NextToken()
+
+			if tok.Type != tC.expectedType {
+				t.Errorf("test #%d wrong token type: want %q, got %q", i, tC.expectedType, tok.Type)
+			}
+
+			if tok.Literal != tC.expectedLiteral {
+				t.Errorf("test #%d wrong literal: want %q, got %q", i, tC.expectedLiteral, tok.Literal)
+			}
+		}
+	})
+
 	t.Run("assignments and functions", func(t *testing.T) {
 		input := `let five = 5;
 		let ten = 10;
