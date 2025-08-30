@@ -1,6 +1,10 @@
 package ast
 
-import "github.com/antklim/go-inter/token"
+import (
+	"bytes"
+
+	"github.com/antklim/go-inter/token"
+)
 
 type LetStatement struct {
 	Token token.Token // the token.LET token
@@ -9,8 +13,24 @@ type LetStatement struct {
 }
 
 func (s *LetStatement) statementNode() {}
+
 func (s *LetStatement) TokenLiteral() string {
 	return s.Token.Literal
+}
+
+func (s *LetStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(s.TokenLiteral() + " ")
+	out.WriteString(s.Name.String())
+	out.WriteString(" = ")
+
+	if s.Value != nil {
+		out.WriteString(s.Value.String())
+	}
+	out.WriteRune(';')
+
+	return out.String()
 }
 
 type ReturnStatement struct {
@@ -19,6 +39,20 @@ type ReturnStatement struct {
 }
 
 func (s *ReturnStatement) statementNode() {}
+
 func (s *ReturnStatement) TokenLiteral() string {
 	return s.Token.Literal
+}
+
+func (s *ReturnStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(s.TokenLiteral() + " ")
+
+	if s.Value != nil {
+		out.WriteString(s.Value.String())
+	}
+	out.WriteRune(';')
+
+	return out.String()
 }
