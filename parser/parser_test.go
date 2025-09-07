@@ -76,18 +76,18 @@ func TestIdentifierExpression(t *testing.T) {
 	checkParserErrors(t, p)
 
 	if len(program.Statements) != 1 {
-		t.Fatalf("program has not enough statements. got=%d",
+		t.Fatalf("program has not enough statements, got %d",
 			len(program.Statements))
 	}
 
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Errorf("program.Statements[0] is not *ast.ExpressionStatement. got=%T", program.Statements[0])
+		t.Errorf("program.Statements[0] is not *ast.ExpressionStatement, got=%T", program.Statements[0])
 	}
 
 	ident, ok := stmt.Expression.(*ast.Identifier)
 	if !ok {
-		t.Errorf("stmt.Expression is not *ast.Identifier. got=%T", stmt.Expression)
+		t.Errorf("stmt.Expression is not *ast.Identifier, got %T", stmt.Expression)
 	}
 
 	if want, got := "foobar", ident.Value; want != got {
@@ -98,24 +98,55 @@ func TestIdentifierExpression(t *testing.T) {
 	}
 }
 
+func TestIntegerLiteralExpression(t *testing.T) {
+	input := "5;"
+
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements, got %d",
+			len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Errorf("program.Statements[0] is not *ast.ExpressionStatement, got=%T", program.Statements[0])
+	}
+
+	literal, ok := stmt.Expression.(*ast.IntegerLiteral)
+	if !ok {
+		t.Errorf("stmt.Expression is not *ast.IntegerLiteral, got %T", stmt.Expression)
+	}
+	if want, got := int64(5), literal.Value; want != got {
+		t.Errorf("invalid literal.Value\n\twant %d\n\t got %d", want, got)
+	}
+	if want, got := "5", literal.TokenLiteral(); want != got {
+		t.Errorf("invalid ident.TokenLiteral\n\twant %s\n\t got %s", want, got)
+	}
+}
+
 func testLetStatement(t *testing.T, s ast.Statement, name string) {
 	t.Helper()
 
 	if s.TokenLiteral() != "let" {
-		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
+		t.Errorf("s.TokenLiteral not 'let', got=%q", s.TokenLiteral())
 	}
 
 	letStmt, ok := s.(*ast.LetStatement)
 	if !ok {
-		t.Errorf("s not *ast.LetStatement. got=%T", s)
+		t.Errorf("s not *ast.LetStatement, got=%T", s)
 	}
 
 	if letStmt.Name.Value != name {
-		t.Errorf("letStmt.Name.Value not '%s'. got=%s", name, letStmt.Name.Value)
+		t.Errorf("letStmt.Name.Value not '%s', got=%s", name, letStmt.Name.Value)
 	}
 
 	if letStmt.Name.TokenLiteral() != name {
-		t.Errorf("letStmt.Name.TokenLiteral() not '%s'. got=%s", name, letStmt.Name.TokenLiteral())
+		t.Errorf("letStmt.Name.TokenLiteral() not '%s', got=%s", name, letStmt.Name.TokenLiteral())
 	}
 }
 
